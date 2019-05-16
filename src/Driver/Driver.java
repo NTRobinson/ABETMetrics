@@ -28,57 +28,51 @@ public class Driver {
 	    	student.printABET();
 	    }
 	    
-	    ArrayList<Float> abet_averages = new ArrayList<Float>();
-	    for(int i = 0; i <= 11; i++)
-	    { // populate with 0s
-	    	abet_averages.add((float) 0);
-	    }
+	    ArrayList<Float> abet_averages = getABETAverages(students);
+	    printABETAverages(abet_averages);
+	}
+	
+	public static ArrayList<Material> getMaterials()
+	{ // gets data on materials, needs to be in the same order as the spreadsheet
+		System.out.print("Enter the total number of graded material(s): ");
+		Scanner kb = new Scanner(System.in);
+	    int num_materials = Integer.parseInt(kb.nextLine());
+	    ArrayList<Material> materials = new ArrayList<Material>();
 	    
-	    // add them all together
-	    for(int i = 0; i < students.size(); i++)
+	    if (num_materials == 0) 
+	    {/* do nothing */}
+	    
+	    else
 	    {
-	    	ArrayList<Float> abet_values = students.get(i).getABETvalues();
-	    	
-	    	abet_averages.set(0, abet_averages.get(0) + abet_values.get(0));
-	    	abet_averages.set(1, abet_averages.get(1) + abet_values.get(1));
-	    	abet_averages.set(2, abet_averages.get(2) + abet_values.get(2));
-	    	abet_averages.set(3, abet_averages.get(3) + abet_values.get(3));
-	    	abet_averages.set(4, abet_averages.get(4) + abet_values.get(4));
-	    	abet_averages.set(5, abet_averages.get(5) + abet_values.get(5));
-	    	abet_averages.set(6, abet_averages.get(6) + abet_values.get(6));
-	    	abet_averages.set(7, abet_averages.get(7) + abet_values.get(7));
-	    	abet_averages.set(8, abet_averages.get(8) + abet_values.get(8));
-	    	abet_averages.set(9, abet_averages.get(9) + abet_values.get(9));
-	    	abet_averages.set(10, abet_averages.get(10) + abet_values.get(10));
+			boolean done = false;
+			while(done == false)
+			{
+				System.out.println();
+				System.out.print("Enter name of material/assignment: ");
+				String name = kb.nextLine();
+				
+				Material graded_material = new Material(name);
+				ArrayList<Float> ABET_sums = graded_material.getCriteriaSums();
+				
+				for(int i = 0; i < 7; i++)
+				{
+					System.out.print("Enter sum of ABET criteria " + (i + 1) + " knowledge: ");
+					ABET_sums.set(i, getFloat());
+				}
+				
+				graded_material.setCriteriaSums(ABET_sums);
+				materials.add(graded_material);
+				//graded_material.print();
+				
+				num_materials--;
+				if (num_materials == 0)
+				{
+					done = true;
+				}
+			}
 	    }
-	    
-	    // divide by the total number of students
-    	abet_averages.set(0, abet_averages.get(0) / students.size());
-    	abet_averages.set(1, abet_averages.get(1) / students.size());
-    	abet_averages.set(2, abet_averages.get(2) / students.size());
-    	abet_averages.set(3, abet_averages.get(3) / students.size());
-    	abet_averages.set(4, abet_averages.get(4) / students.size());
-    	abet_averages.set(5, abet_averages.get(5) / students.size());
-    	abet_averages.set(6, abet_averages.get(6) / students.size());
-    	abet_averages.set(7, abet_averages.get(7) / students.size());
-    	abet_averages.set(8, abet_averages.get(8) / students.size());
-    	abet_averages.set(9, abet_averages.get(9) / students.size());
-    	abet_averages.set(10, abet_averages.get(10) / students.size());
-	    
-	    System.out.println();
-	    System.out.println("ABET averages: ");
-	    
-	    System.out.println("Avg A: " + abet_averages.get(0));
-	    System.out.println("Avg B: " + abet_averages.get(1));
-	    System.out.println("Avg C: " + abet_averages.get(2));
-	    System.out.println("Avg D: " + abet_averages.get(3));
-	    System.out.println("Avg E: " + abet_averages.get(4));
-	    System.out.println("Avg F: " + abet_averages.get(5));
-	    System.out.println("Avg G: " + abet_averages.get(6));
-	    System.out.println("Avg H: " + abet_averages.get(7));
-	    System.out.println("Avg I: " + abet_averages.get(8));
-	    System.out.println("Avg J: " + abet_averages.get(9));
-	    System.out.println("Avg K: " + abet_averages.get(10));
+		
+		return materials;
 	}
 	
 	public static ArrayList<Student> getGrades(String input_file, ArrayList<Material> materials) throws IOException
@@ -117,74 +111,43 @@ public class Driver {
 		return students;
 	}
 	
-	public static ArrayList<Material> getMaterials()
-	{ // gets data on materials, needs to be in the same order as the spreadsheet
-		System.out.print("Enter the total number of graded material(s): ");
-		Scanner kb = new Scanner(System.in);
-	    int num_materials = Integer.parseInt(kb.nextLine());
-	    ArrayList<Material> materials = new ArrayList<Material>();
-	    
-	    if (num_materials == 0) 
-	    {
-	    	// do nothing
+	public static ArrayList<Float> getABETAverages(ArrayList<Student> students)
+	{
+		ArrayList<Float> abet_averages = new ArrayList<Float>();
+	    for(int i = 0; i <= 11; i++)
+	    { // populate with 0s
+	    	abet_averages.add((float) 0);
 	    }
 	    
-	    else
+	    // add them all together
+	    for(int i = 0; i < students.size(); i++)
 	    {
-			boolean done = false;
-			while(done == false)
-			{
-				System.out.println();
-				System.out.print("Enter name of material/assignment: ");
-				String name = kb.nextLine();
-				
-				Material graded_material = new Material(name);
-				
-				System.out.print("Enter sum of ABET criteria A knowledge: ");
-				graded_material.setSum_a_knowledge(getFloat());
-				
-				System.out.print("Enter sum of ABET criteria B knowledge: ");
-				graded_material.setSum_b_knowledge(getFloat());
-				
-				System.out.print("Enter sum of ABET criteria C knowledge: ");
-				graded_material.setSum_c_knowledge(getFloat());
-				
-				System.out.print("Enter sum of ABET criteria D knowledge: ");
-				graded_material.setSum_d_knowledge(getFloat());
-				
-				System.out.print("Enter sum of ABET criteria E knowledge: ");
-				graded_material.setSum_e_knowledge(getFloat());
-				
-				System.out.print("Enter sum of ABET criteria F knowledge: ");
-				graded_material.setSum_f_knowledge(getFloat());
-				
-				System.out.print("Enter sum of ABET criteria G knowledge: ");
-				graded_material.setSum_g_knowledge(getFloat());
-				
-				System.out.print("Enter sum of ABET criteria H knowledge: ");
-				graded_material.setSum_h_knowledge(getFloat());
-				
-				System.out.print("Enter sum of ABET criteria I knowledge: ");
-				graded_material.setSum_i_knowledge(getFloat());
-				
-				System.out.print("Enter sum of ABET criteria J knowledge: ");
-				graded_material.setSum_j_knowledge(getFloat());
-				
-				System.out.print("Enter sum of ABET criteria K knowledge: ");
-				graded_material.setSum_k_knowledge(getFloat());
-				
-				materials.add(graded_material);
-				graded_material.print();
-				
-				num_materials--;
-				if (num_materials == 0)
-				{
-					done = true;
-				}
-			}
+	    	ArrayList<Float> abet_values = students.get(i).getABETvalues();
+	    	
+	    	for(int j = 0; j < 7; j++)
+	    	{
+	    		abet_averages.set(j, abet_averages.get(j) + abet_values.get(j));
+	    	}
 	    }
-		
-		return materials;
+	    
+	    // divide by the total number of students
+	    for(int i = 0; i < 7; i++)
+	    {
+	    	abet_averages.set(i, abet_averages.get(i) / students.size());
+	    }
+
+    	return abet_averages;
+	}
+	
+	public static void printABETAverages(ArrayList<Float> abet_averages)
+	{
+		System.out.println();
+	    System.out.println("ABET averages: ");
+	    
+	    for(int i = 0; i < 7; i++)
+	    {
+	    	System.out.println("Avg Criteria " + i + ": " + abet_averages.get(i));
+	    }
 	}
 	
 	public static float getFloat()

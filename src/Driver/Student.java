@@ -34,7 +34,7 @@ public class Student
 		// so we have a "material" with different ABET values associated with it
 		// need to pull that information out (for each material), multiply it by whatever percentage the student made on the assignment, and sum it with every other material
 		
-		for (int i = 0; i <= 11; i++)
+		for (int i = 0; i < 7; i++)
 		{ // initialize ABET values to 0
 			abet_values.add((float) 0);
 		}
@@ -44,17 +44,10 @@ public class Student
 			float grade_on_material = grades.get(i);
 			
 			// there are 11 ABET criteria, where index 0 in abet_values corresponds to criteria 'a'
-			abet_values.set(0, (float) ((abet_values.get(0) + materials.get(i).getSum_a_knowledge() * 0.01 * grade_on_material)));
-			abet_values.set(1, (float) ((abet_values.get(1) + materials.get(i).getSum_b_knowledge() * 0.01 * grade_on_material)));
-			abet_values.set(2, (float) ((abet_values.get(2) + materials.get(i).getSum_c_knowledge() * 0.01 * grade_on_material)));
-			abet_values.set(3, (float) ((abet_values.get(3) + materials.get(i).getSum_d_knowledge() * 0.01 * grade_on_material)));
-			abet_values.set(4, (float) ((abet_values.get(4) + materials.get(i).getSum_e_knowledge() * 0.01 * grade_on_material)));
-			abet_values.set(5, (float) ((abet_values.get(5) + materials.get(i).getSum_f_knowledge() * 0.01 * grade_on_material)));
-			abet_values.set(6, (float) ((abet_values.get(6) + materials.get(i).getSum_g_knowledge() * 0.01 * grade_on_material)));
-			abet_values.set(7, (float) ((abet_values.get(7) + materials.get(i).getSum_h_knowledge() * 0.01 * grade_on_material)));
-			abet_values.set(8, (float) ((abet_values.get(8) + materials.get(i).getSum_i_knowledge() * 0.01 * grade_on_material)));
-			abet_values.set(9, (float) ((abet_values.get(9) + materials.get(i).getSum_j_knowledge() * 0.01 * grade_on_material)));
-			abet_values.set(10, (float) ((abet_values.get(10) + materials.get(i).getSum_k_knowledge() * 0.01 * grade_on_material)));
+			for(int j = 0; j < 7; j++)
+			{
+				abet_values.set(j, (float) ((abet_values.get(j) + materials.get(i).getCriteriaSums().get(j) * 0.01 * grade_on_material)));
+			}
 		}
 		
 		return abet_values;
@@ -84,16 +77,12 @@ public class Student
 	{
 		System.out.println();
 		System.out.println(name + " ABET scores: ");
-		System.out.println("A: " + abet_values.get(0));
-		System.out.println("B: " + abet_values.get(1));
-		System.out.println("C: " + abet_values.get(2));
-		System.out.println("D: " + abet_values.get(3));
-		System.out.println("E: " + abet_values.get(4));
-		System.out.println("F: " + abet_values.get(5));
-		System.out.println("G: " + abet_values.get(6));
-		System.out.println("H: " + abet_values.get(7));
-		System.out.println("I: " + abet_values.get(8));
-		System.out.println("J: " + abet_values.get(9));
-		System.out.println("K: " + abet_values.get(10));
+		System.out.println("1: " + abet_values.get(0));
+		System.out.println("2: " + abet_values.get(1));
+		System.out.println("3: " + abet_values.get(2));
+		System.out.println("4: " + abet_values.get(3));
+		System.out.println("5: " + abet_values.get(4));
+		System.out.println("6: " + abet_values.get(5));
+		System.out.println("7: " + abet_values.get(6));
 	}
 }
