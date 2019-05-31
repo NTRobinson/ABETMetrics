@@ -1,18 +1,29 @@
 package Driver;
 
+import ABET.ABETGUI;
 import ABET.Material;
+import ABET.Student;
+import GUI.GUI;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
+import javax.swing.JFrame;
 
 public class Driver {
 	public static void main(String[] args) throws IOException
 	{
-		System.out.println("ABET Criteria Calculator");
+		System.out.println("ABET Metrics");
 		
-	    ArrayList<Material> materials = getMaterials(); // be SURE that the materials are input in the same order that they appear on the spreadsheet
-	    ArrayList<Student> students = getGrades(args[0], materials);
+		ABETGUI gui = new ABETGUI(800, 600, "ABET Metrics");
+		
+	    //nonGUI();
+	}
+	
+	public static void nonGUI() throws IOException
+	{
+		ArrayList<Material> materials = getMaterials(); // be SURE that the materials are input in the same order that they appear on the spreadsheet
+	    ArrayList<Student> students = getGrades(materials);
 	    for(Student student : students)
 	    {
 	    	student.calculateABETvalues();
@@ -51,7 +62,7 @@ public class Driver {
 				System.out.print("Enter name of material/assignment: ");
 				String name = kb.nextLine();
 				
-				Material graded_material = new Material(name);
+				Material graded_material = new Material(name, 0);
 				ArrayList<Float> ABET_sums = graded_material.getCriteriaSums();
 				
 				for(int i = 0; i < 7; i++)
@@ -75,8 +86,13 @@ public class Driver {
 		return materials;
 	}
 	
-	public static ArrayList<Student> getGrades(String input_file, ArrayList<Material> materials) throws IOException
+	public static ArrayList<Student> getGrades(ArrayList<Material> materials) throws IOException
 	{ // this method will acquire the entire grade list
+		Scanner kb = new Scanner(System.in);
+		System.out.println();
+		System.out.println("Enter the name of input grade file: ");
+		String input_file = kb.nextLine();
+		
 		ArrayList<Student> students = new ArrayList<Student>();
 		FileReader fr = new FileReader();
 		
@@ -146,7 +162,7 @@ public class Driver {
 	    
 	    for(int i = 0; i < 7; i++)
 	    {
-	    	System.out.println("Avg Criteria " + i + ": " + abet_averages.get(i));
+	    	System.out.println("Avg Criteria " + (i + 1) + ": " + abet_averages.get(i));
 	    }
 	}
 	

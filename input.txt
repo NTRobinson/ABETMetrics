@@ -1,4 +1,4 @@
-NAME	PCB 1	PCB 2
+NAME	Quiz	Test
 "Robinson, Nathan"	90	76
 "Jorgy, Steph"	100	100
 "Baested, Matty"	88	97
