@@ -94,7 +94,7 @@ public class Driver {
 		String input_file = kb.nextLine();
 		
 		ArrayList<Student> students = new ArrayList<Student>();
-		FileReader fr = new FileReader();
+		FileReaderWriter fr = new FileReaderWriter();
 		
 		ArrayList<String> lines = fr.readFile(input_file);
 		for(int i = 1; i < lines.size(); i++)
@@ -117,7 +117,7 @@ public class Driver {
 				}
 				else
 				{ // add whatever the grade value is
-					student.addGrade(Float.parseFloat(line_values_al.get(j)));
+					student.addGrade(Float.parseFloat(line_values_al.get(j)), new String());
 				}
 			}
 			

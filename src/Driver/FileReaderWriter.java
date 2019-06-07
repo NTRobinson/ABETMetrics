@@ -1,22 +1,24 @@
 package Driver;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
-public class FileReader
+public class FileReaderWriter
 {
-	public FileReader()
+	public FileReaderWriter()
 	{
 		// nothing needed for construction
 	}
 	public ArrayList<String> readFile(String name) throws IOException 
 	{
 		FileInputStream fis = new FileInputStream(name);
-		
-		// BufferedReader is constructed with an InputStreamReader
 		InputStreamReader isr = new InputStreamReader(fis);
 		BufferedReader br = new BufferedReader(isr);
 	 
@@ -31,5 +33,21 @@ public class FileReader
 		br.close();
 		
 		return text;
+	}
+	public void writeFile(String name, ArrayList<String> lines) throws IOException
+	{
+		FileOutputStream fos = new FileOutputStream(name);
+		
+		// BufferedWriter
+		OutputStreamWriter osw = new OutputStreamWriter(fos);
+		BufferedWriter bw = new BufferedWriter(osw);
+		
+		for(String s : lines)
+		{
+			bw.write(s);
+			bw.newLine();
+		}
+		
+		bw.close();
 	}
 }

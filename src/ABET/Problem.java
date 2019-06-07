@@ -1,5 +1,7 @@
 package ABET;
 
+import java.util.ArrayList;
+
 public class Problem 
 { // holds data on a particular problem for any given material
 	private String name;
@@ -8,8 +10,8 @@ public class Problem
 	
 	public Problem(String n, float p,  float c1, float c2, float c3, float c4, float c5, float c6, float c7)
 	{
-		points_within_assignment = p;
 		name = n;
+		points_within_assignment = p;
 		ABET_criteria_p = new float[7];
 		ABET_criteria_p[0] = c1;
 		ABET_criteria_p[1] = c2;
@@ -33,6 +35,22 @@ public class Problem
 		}
 		
 		return abet;
+	}
+	public ArrayList<String> toStringArray()
+	{ // writes all info to an array of strings
+		ArrayList<String> lines = new ArrayList<String>();
+		
+		lines.add(name);
+		lines.add(Float.toString(points_within_assignment));
+		lines.add(Float.toString(ABET_criteria_p[0]));
+		lines.add(Float.toString(ABET_criteria_p[1]));
+		lines.add(Float.toString(ABET_criteria_p[2]));
+		lines.add(Float.toString(ABET_criteria_p[3]));
+		lines.add(Float.toString(ABET_criteria_p[4]));
+		lines.add(Float.toString(ABET_criteria_p[5]));
+		lines.add(Float.toString(ABET_criteria_p[6]));
+		
+		return lines;
 	}
 	
 	public float[] getABET()

@@ -13,13 +13,22 @@ public class Student
 	public Student(ArrayList<Material> ms)
 	{
 		materials = ms;
-		grades = new ArrayList<Float>();
+		grades = new ArrayList<Float>(materials.size());
 		abet_values = new ArrayList<Float>();
 	}
 	
-	public void addGrade(float g)
+	public boolean addGrade(float g, String material)
 	{
-		grades.add(g);
+		boolean added = false;
+		for(int i = 0; i < materials.size(); i++)
+		{
+			if(material.equalsIgnoreCase(materials.get(i).getName()))
+			{ // if the name of material supplied matches one in the list, that's the grade value we have
+				grades.set(i, g);
+				added = true;
+			}
+		}
+		return added;
 	}
 	
 	public void setName(String n)

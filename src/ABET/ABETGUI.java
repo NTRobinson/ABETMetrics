@@ -6,12 +6,14 @@ import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
@@ -101,7 +103,7 @@ public class ABETGUI extends GUI implements Drawable, ActionListener
 	}
 	
 	public void setupMaterialsFrame(GUI materials_frame)
-	{
+	{ // frame for adding materials and their associated problem
 		// NORTH
 	    JPanel north_p = new JPanel();
 	    BorderLayout north_l = new BorderLayout();
@@ -127,7 +129,7 @@ public class ABETGUI extends GUI implements Drawable, ActionListener
 	    
 	    // - for adding materials
 	    JPanel west_east_p = new JPanel();
-	    GridLayout west_east_l = new GridLayout(20, 1);
+	    GridLayout west_east_l = new GridLayout(22, 1);
 	    west_east_p.setLayout(west_east_l);
 	    m_name = new JTextField();
 	    m_grade_points = new JTextField();
@@ -139,9 +141,11 @@ public class ABETGUI extends GUI implements Drawable, ActionListener
 	    remove_material_b.setActionCommand("REMOVE MATERIAL");
 	    JLabel name_l = new JLabel("Name : ");
 	    name_l.setToolTipText("Name of assignment/material.");
+	    JLabel assignments_label = new JLabel("ASSIGNMENTS");
 	    JLabel grade_points_l = new JLabel("Grade Points: ");
 	    grade_points_l.setToolTipText("Total grade point value within the class for this assignment.");
 	    
+	    west_east_p.add(assignments_label);
 	    west_east_p.add(name_l);
 	    west_east_p.add(m_name);
 	    west_east_p.add(grade_points_l);
@@ -157,20 +161,26 @@ public class ABETGUI extends GUI implements Drawable, ActionListener
 	    
 	    // - display problems for a given material
 	    JPanel east_east_p = new JPanel();
-	    GridLayout east_east_l = new GridLayout(2, 1);
+	    BorderLayout east_east_l = new BorderLayout();
 	    east_east_p.setLayout(east_east_l);
 	    east_p.add(east_east_p, BorderLayout.EAST);
 	    
+	    JButton display_problem = new JButton("Display Selected");
+	    display_problem.addActionListener(this); // whenever the combo box picks up an action
+	    display_problem.setActionCommand("DISPLAY PROBLEM");
+	    east_east_p.add(display_problem, BorderLayout.PAGE_START);
+	    
 	    east_north_scroll = new JScrollPane();
 	    east_north_scroll.setPreferredSize(new Dimension(200,200));
-	    east_east_p.add(east_north_scroll);
+	    east_east_p.add(east_north_scroll, BorderLayout.CENTER);
 	    
 	    problems_l = new JList<Problem>();
 	    
 	    // - display ABET criteria for selected problem
 	    east_south_text = new JTextPane();
 	    east_south_text.setPreferredSize(new Dimension(200,200));
-	    east_east_p.add(east_south_text);
+	    east_south_text.setEditable(false);
+	    east_east_p.add(east_south_text, BorderLayout.PAGE_END);
 	    
 	    // - select a material to add problems to
 	    JPanel east_west_p = new JPanel();
@@ -179,10 +189,9 @@ public class ABETGUI extends GUI implements Drawable, ActionListener
 	    east_combo = new JComboBox<Material>();
 	    east_combo.addActionListener(this); // whenever the combo box picks up an action
 	    east_combo.setActionCommand("MATERIAL SELECT");
-	    east_west_p.add(east_combo);
-	    east_p.add(east_west_p, BorderLayout.WEST);
 	    
 	    // - attribute boxes for a problem for a given material
+	    JLabel prob_label = new JLabel("PROBLEMS");
 	    JLabel prob_name_l = new JLabel("Name: ");
 	    prob_name = new JTextField();
 	    JLabel prob_pv_l = new JLabel("Point Value: ");
@@ -210,6 +219,8 @@ public class ABETGUI extends GUI implements Drawable, ActionListener
 	    prob_crit7 = new JTextField("0");
 	    prob_crit7.setToolTipText("Percentage of problem that satisfies ABET criteria 7.");
 	    
+	    east_west_p.add(prob_label);
+	    east_west_p.add(east_combo);
 	    east_west_p.add(prob_name_l);
 	    east_west_p.add(prob_name);
 	    east_west_p.add(prob_pv_l);
@@ -239,10 +250,7 @@ public class ABETGUI extends GUI implements Drawable, ActionListener
 	    remove_problem.setActionCommand("REMOVE PROBLEM");
 	    east_west_p.add(remove_problem);
 	    
-	    JButton display_problem = new JButton("Display Selected");
-	    display_problem.addActionListener(this); // whenever the combo box picks up an action
-	    display_problem.setActionCommand("DISPLAY PROBLEM");
-	    east_west_p.add(display_problem);
+	    east_p.add(east_west_p, BorderLayout.WEST);
 	    
 	    javax.swing.ImageIcon img_icon = new javax.swing.ImageIcon("resources/abet.png");
 		materials_frame.setIconImage(img_icon.getImage());
@@ -273,7 +281,7 @@ public class ABETGUI extends GUI implements Drawable, ActionListener
 		    material_l.setListData(materials.toArray(materials_array));
 		    material_l2.setListData(materials.toArray(materials_array));
 
-		    east_combo.addItem(m);;
+		    east_combo.addItem(m);
 		}
 		else if (ae.getActionCommand().equals("REMOVE MATERIAL"))
 		{ // removes a material that has been added to the list
@@ -288,29 +296,42 @@ public class ABETGUI extends GUI implements Drawable, ActionListener
 		}
 		else if (ae.getActionCommand().equals("MATERIAL SELECT"))
 		{ // when a material is selected, change to that material's problems
-			east_combo.removeActionListener(this);
-			
 			Material selected = (Material) east_combo.getSelectedItem();
-			JList<Problem> problems_l = new JList<Problem>();
 			Problem[] problem_l_array = new Problem[selected.getProblems().size()];
 			problems_l.setListData(selected.getProblems().toArray(problem_l_array));
 		    east_north_scroll.getViewport().add(problems_l);
-			
-			east_combo.addActionListener(this);
 		}
 		else if (ae.getActionCommand().equals("ADD PROBLEM"))
 		{ // adds a problem to the selected material with given input
-			Material selected = (Material) east_combo.getSelectedItem();
 			
-			Problem new_prob = new Problem(prob_name.getText(), Float.parseFloat(prob_points.getText()), Float.parseFloat(prob_crit1.getText()), Float.parseFloat(prob_crit2.getText()), Float.parseFloat(prob_crit3.getText()),
-					Float.parseFloat(prob_crit4.getText()), Float.parseFloat(prob_crit5.getText()), Float.parseFloat(prob_crit6.getText()), Float.parseFloat(prob_crit7.getText()));
-			selected.addProblem(new_prob);
+			float sum_percentages = Float.parseFloat(prob_crit1.getText()) + Float.parseFloat(prob_crit2.getText()) + Float.parseFloat(prob_crit3.getText()) +
+					Float.parseFloat(prob_crit4.getText()) + Float.parseFloat(prob_crit5.getText()) + Float.parseFloat(prob_crit6.getText()) + Float.parseFloat(prob_crit7.getText());
 			
-			Problem[] problem_l_array = new Problem[selected.getProblems().size()];
-			problems_l.setListData(selected.getProblems().toArray(problem_l_array));
-		    east_north_scroll.getViewport().add(problems_l);
-			
-		    east_south_text.setText(new_prob.toStringABET());
+			if(sum_percentages <= 100)
+			{ // percentages add up to 100
+				if (sum_percentages == 0 || sum_percentages == 100)
+				{
+					Material selected = (Material) east_combo.getSelectedItem();
+					
+					Problem new_prob = new Problem(prob_name.getText(), Float.parseFloat(prob_points.getText()), Float.parseFloat(prob_crit1.getText()), Float.parseFloat(prob_crit2.getText()), Float.parseFloat(prob_crit3.getText()),
+							Float.parseFloat(prob_crit4.getText()), Float.parseFloat(prob_crit5.getText()), Float.parseFloat(prob_crit6.getText()), Float.parseFloat(prob_crit7.getText()));
+					selected.addProblem(new_prob);
+					
+					Problem[] problem_l_array = new Problem[selected.getProblems().size()];
+					problems_l.setListData(selected.getProblems().toArray(problem_l_array));
+				    east_north_scroll.getViewport().add(problems_l);
+					
+				    east_south_text.setText(new_prob.toStringABET());
+				}
+				else
+				{
+					JOptionPane.showMessageDialog(materials_frame, "Percentages don't add up to 100%");
+				}
+			}
+			else
+			{
+				JOptionPane.showMessageDialog(materials_frame, "Percentages add up to more than 100%");
+			}
 		}
 		else if (ae.getActionCommand().equals("REMOVE PROBLEM"))
 		{ // adds a problem to the selected material with given input
@@ -324,17 +345,65 @@ public class ABETGUI extends GUI implements Drawable, ActionListener
 		    east_north_scroll.getViewport().add(problems_l);
 		}
 		else if (ae.getActionCommand().equals("DISPLAY PROBLEM"))
-		{ // display ABET criteria and point values for problem
-			Problem selected = problems_l.getSelectedValue();
-			east_south_text.setText(selected.toStringABET());
+		{ // display ABET criteria and point values for problem  
+			Problem selected_p = problems_l.getSelectedValue();
+			east_south_text.setText(selected_p.toStringABET());
 		}
 		else if (ae.getActionCommand().equals("LOAD"))
-		{ // to-do
-			System.out.println("WIP - not working yet");
+		{ // load up a saved set of material data
+			ABETLoadSave ls = new ABETLoadSave();
+			try 
+			{
+				ArrayList<Material> loaded_materials = ls.load("materials_data.txt");
+				materials = loaded_materials;
+				
+				Material[] materials_array = new Material[materials.size()];
+				material_l.setListData(materials.toArray(materials_array));
+			    material_l2.setListData(materials.toArray(materials_array));
+			    
+			    east_combo.removeAllItems();
+			    for(Material m : materials)
+			    {
+			    	east_combo.addItem(m);
+			    }
+			    Material selected = (Material) east_combo.getSelectedItem();
+				
+				Problem[] problem_l_array = new Problem[selected.getProblems().size()];
+				problems_l.setListData(selected.getProblems().toArray(problem_l_array));
+			    east_north_scroll.getViewport().add(problems_l);
+				
+				JOptionPane.showMessageDialog(this, "Assignment/material data loaded.");
+			}
+			catch (IOException e) 
+			{
+				e.printStackTrace();
+				JOptionPane.showMessageDialog(this, "Could not find saved file.");
+			}
 		}
 		else if (ae.getActionCommand().equals("SAVE"))
-		{ // to-do
-			System.out.println("WIP - not working yet");
+		{ //  save all material data to a file
+			if(materials.size() > 0)
+			{
+				ArrayList<String> lines = new ArrayList<String>();
+				lines.add(Integer.toString(materials.size())); // need to know how many materials to read
+				for(Material m : materials)
+				{ // get each material
+					ArrayList<String> material_lines = m.toStringArray();
+					for(String s : material_lines)
+					{ // add material lines to file
+						lines.add(s);
+					}
+				}
+				ABETLoadSave ls = new ABETLoadSave();
+				try {ls.save("materials_data.txt", lines);} 
+				catch (IOException e) {e.printStackTrace();}
+				
+				JOptionPane.showMessageDialog(this, "Assignment/material data saved.");
+			}
+			else
+			{
+				JOptionPane.showMessageDialog(this, "No assignments/materials added to save!");
+			}
 		}
 	}
 
