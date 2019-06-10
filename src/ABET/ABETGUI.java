@@ -25,6 +25,7 @@ public class ABETGUI extends GUI implements Drawable, ActionListener
 {
 	private GUI materials_frame;
 	private ArrayList<Material> materials;
+	private ArrayList<Student> students;
 	
 	private JTextField m_name;
     private JTextField m_grade_points;
@@ -34,6 +35,7 @@ public class ABETGUI extends GUI implements Drawable, ActionListener
     private JScrollPane east_north_scroll;
     private JList<Problem> problems_l;
     private JTextPane east_south_text;
+    private JTextPane abet_results;
     
     private JTextField prob_name;
     private JTextField prob_points;
@@ -48,7 +50,7 @@ public class ABETGUI extends GUI implements Drawable, ActionListener
 	public ABETGUI(int width, int height, String title) 
 	{
 		super(width, height, title);
-		materials_frame = new GUI(width, height, "Add Materials"); // will pop up when "Add Materials" button clicked
+		materials_frame = new GUI(width, height, "Add Assignments"); // will pop up when "Add Materials" button clicked
 		materials = new ArrayList<Material>();
 		
 		// second frame needed for materials
@@ -60,7 +62,7 @@ public class ABETGUI extends GUI implements Drawable, ActionListener
 		west_p.setLayout(west_l);
 		
 		// - materials
-		JButton add_material = new JButton("Add Materials");
+		JButton add_material = new JButton("Add Assignments");
 	    west_p.add(add_material, BorderLayout.NORTH);
 	    add_material.addActionListener(this);
 	    add_material.setActionCommand("ADD");
@@ -75,30 +77,54 @@ public class ABETGUI extends GUI implements Drawable, ActionListener
 	    west_p.add(west_scroll, BorderLayout.WEST);
 	    
 	    // - save/load materials
-	    JPanel east_west_p = new JPanel();
-	    GridLayout east_west_l = new GridLayout(2, 1);
-	    east_west_p.setLayout(east_west_l);
+	    JPanel west_east_p = new JPanel();
+	    GridLayout west_east_l = new GridLayout(2, 1);
+	    west_east_p.setLayout(west_east_l);
 	    
-	    JButton load_material = new JButton("Load");
+	    JButton load_material = new JButton("Load Assignments");
 	    load_material.addActionListener(this); // whenever the combo box picks up an action
 	    load_material.setActionCommand("LOAD");
-	    east_west_p.add(load_material);
+	    west_east_p.add(load_material);
 	    
-	    JButton save_material = new JButton("Save");
+	    JButton save_material = new JButton("Save Assignments");
 	    save_material.addActionListener(this); // whenever the combo box picks up an action
 	    save_material.setActionCommand("SAVE");
-	    east_west_p.add(save_material);
+	    west_east_p.add(save_material);
 	    
-	    west_p.add(east_west_p, BorderLayout.EAST);
+	    west_p.add(west_east_p, BorderLayout.EAST);
 	    
 	    // EAST
+	    JPanel east_p = new JPanel();
+	    BorderLayout east_l = new BorderLayout();
+	    east_p.setLayout(east_l);
 	    
+	    abet_results = new JTextPane(); //east_south_text.setPreferredSize(new Dimension(200,200));
+	    abet_results.setEditable(false);
+	    abet_results.setText("ABET Averages");
+	    east_p.add(abet_results, BorderLayout.EAST);
+	    
+	    JPanel east_west_p = new JPanel();
+	    BorderLayout east_west_l = new BorderLayout();
+	    east_west_p.setLayout(east_west_l);
+	    
+	    JButton load_grades = new JButton("Load Grades");
+	    load_grades.addActionListener(this);
+	    load_grades.setActionCommand("LOAD GRADES");
+	    east_west_p.add(load_grades, BorderLayout.NORTH);
+	    
+	    JButton calculate = new JButton("Calculate Averages");
+	    calculate.addActionListener(this);
+	    calculate.setActionCommand("CALCULATE");
+	    east_west_p.add(calculate, BorderLayout.CENTER);
+	    
+	    east_p.add(east_west_p, BorderLayout.WEST);
 	    
 	    // finishing touches
 	    javax.swing.ImageIcon img_icon = new javax.swing.ImageIcon("resources/abet.png");
 		setIconImage(img_icon.getImage());
 	    setResizable(false);
 	    setVisible(true);
+	    add(east_p, BorderLayout.EAST);
 	    add(west_p, BorderLayout.WEST);
 	}
 	
@@ -152,6 +178,18 @@ public class ABETGUI extends GUI implements Drawable, ActionListener
 	    west_east_p.add(m_grade_points);
 	    west_east_p.add(add_material_b);
 	    west_east_p.add(remove_material_b);
+	    west_east_p.add(new JLabel());
+	    
+	    // - for saving/loading
+	    JButton load_material = new JButton("Load");
+	    load_material.addActionListener(this); // whenever the combo box picks up an action
+	    load_material.setActionCommand("LOAD");
+	    west_east_p.add(load_material);
+	    
+	    JButton save_material = new JButton("Save");
+	    save_material.addActionListener(this); // whenever the combo box picks up an action
+	    save_material.setActionCommand("SAVE");
+	    west_east_p.add(save_material);
 	    west_p.add(west_east_p, BorderLayout.EAST);
 	    
 	    // EAST - for managing assignment/material DETAILS
@@ -303,7 +341,6 @@ public class ABETGUI extends GUI implements Drawable, ActionListener
 		}
 		else if (ae.getActionCommand().equals("ADD PROBLEM"))
 		{ // adds a problem to the selected material with given input
-			
 			float sum_percentages = Float.parseFloat(prob_crit1.getText()) + Float.parseFloat(prob_crit2.getText()) + Float.parseFloat(prob_crit3.getText()) +
 					Float.parseFloat(prob_crit4.getText()) + Float.parseFloat(prob_crit5.getText()) + Float.parseFloat(prob_crit6.getText()) + Float.parseFloat(prob_crit7.getText());
 			
@@ -323,15 +360,9 @@ public class ABETGUI extends GUI implements Drawable, ActionListener
 					
 				    east_south_text.setText(new_prob.toStringABET());
 				}
-				else
-				{
-					JOptionPane.showMessageDialog(materials_frame, "Percentages don't add up to 100%");
-				}
+				else {JOptionPane.showMessageDialog(materials_frame, "Percentages don't add up to 100%");}
 			}
-			else
-			{
-				JOptionPane.showMessageDialog(materials_frame, "Percentages add up to more than 100%");
-			}
+			else {JOptionPane.showMessageDialog(materials_frame, "Percentages add up to more than 100%");}
 		}
 		else if (ae.getActionCommand().equals("REMOVE PROBLEM"))
 		{ // adds a problem to the selected material with given input
@@ -361,7 +392,9 @@ public class ABETGUI extends GUI implements Drawable, ActionListener
 				material_l.setListData(materials.toArray(materials_array));
 			    material_l2.setListData(materials.toArray(materials_array));
 			    
-			    east_combo.removeAllItems();
+			    try{east_combo.removeAllItems();}
+			    catch (Exception e) {};
+			    
 			    for(Material m : materials)
 			    {
 			    	east_combo.addItem(m);
@@ -400,11 +433,70 @@ public class ABETGUI extends GUI implements Drawable, ActionListener
 				
 				JOptionPane.showMessageDialog(this, "Assignment/material data saved.");
 			}
-			else
-			{
-				JOptionPane.showMessageDialog(this, "No assignments/materials added to save!");
-			}
+			else {JOptionPane.showMessageDialog(this, "No assignments/materials added to save!");}
 		}
+		else if(ae.getActionCommand().equals("LOAD GRADES"))
+		{
+			try 
+			{
+				ABETLoadSave als = new ABETLoadSave();
+				students = als.getGrades(materials, "sample_input.txt");
+				JOptionPane.showMessageDialog(this, "Student grade data has been loaded.");
+			}
+			catch (IOException e) {e.printStackTrace();}
+		}
+		else if(ae.getActionCommand().equals("CALCULATE"))
+		{
+			for(Student student : students)
+		    {
+		    	student.calculateABETvalues();
+		    }
+			ArrayList<Float> abet_averages = getABETAverages(students);
+			
+			String lines = new String();
+			for(int i = 0; i < 7; i++)
+		    { // add to text pane
+				lines = lines + "Avg Criteria " + (i + 1) + ": " + abet_averages.get(i) + "\n";
+		    }
+			abet_results.setText(lines);
+		}
+	}
+	
+	public ArrayList<Float> getABETAverages(ArrayList<Student> students)
+	{
+		ArrayList<Float> abet_averages = new ArrayList<Float>();
+	    for(int i = 0; i <= 7; i++)
+	    {abet_averages.add((float) 0);}
+	    
+	    for(int i = 0; i < students.size(); i++)
+	    { // for each student, add the points they earned in each criteria
+	    	ArrayList<Float> abet_values = students.get(i).getABETvalues();
+	    	for(int j = 0; j < 7; j++)
+	    	{
+	    		abet_averages.set(j, abet_averages.get(j) + abet_values.get(j));
+	    	}
+	    }
+	    for(int i = 0; i < 7; i++)
+	    { // divide sum of all points collectively earned by the total number of students, an average number of points earned
+	    	abet_averages.set(i, abet_averages.get(i) / students.size());
+	    }
+	    
+	    float[] points_possible = new float[7];
+	    for(int i = 0; i < 7; i++)
+	    { // find total number of each criteria points possible
+	    	for(Material m : materials)
+	    	{
+	    		float[] m_points = m.getCriteriaSums();
+	    		points_possible[i] = points_possible[i] + m_points[i];
+	    	}
+	    }
+	    
+	    for(int i = 0; i < 7; i++)
+	    { // find the class average
+	    	abet_averages.set(i, abet_averages.get(i) / points_possible[i]);
+	    }
+	    
+    	return abet_averages;
 	}
 
 	public void draw(Graphics g, int width, int height) 

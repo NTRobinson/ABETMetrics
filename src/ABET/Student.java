@@ -13,12 +13,16 @@ public class Student
 	public Student(ArrayList<Material> ms)
 	{
 		materials = ms;
-		grades = new ArrayList<Float>(materials.size());
+		grades = new ArrayList<Float>();
+		for(int i = 0; i < 7; i++)
+		{
+			grades.add((float) 0);
+		}
+		
 		abet_values = new ArrayList<Float>();
 	}
-	
 	public boolean addGrade(float g, String material)
-	{
+	{	
 		boolean added = false;
 		for(int i = 0; i < materials.size(); i++)
 		{
@@ -30,17 +34,9 @@ public class Student
 		}
 		return added;
 	}
-	
-	public void setName(String n)
-	{
-		name = n;
-	}
-	
 	public ArrayList<Float> calculateABETvalues()
-	{
-		// so we have a "material" with different ABET values associated with it
-		// need to pull that information out (for each material), multiply it by whatever percentage the student made on the assignment, and sum it with every other material
-		
+	{ // need to pull assignment points, multiply it by whatever percentage the student made on the assignment, and sum it with every other material
+		abet_values = new ArrayList<Float>();
 		for (int i = 0; i < 7; i++)
 		{ // initialize ABET values to 0
 			abet_values.add((float) 0);
@@ -49,27 +45,27 @@ public class Student
 		for (int i = 0; i < materials.size(); i++)
 		{
 			float grade_on_material = grades.get(i);
-			
-			// there are 11 ABET criteria, where index 0 in abet_values corresponds to criteria 'a'
+			// there are 7 ABET criteria
 			for(int j = 0; j < 7; j++)
 			{
-				abet_values.set(j, (float) ((abet_values.get(j) + materials.get(i).getCriteriaSums().get(j) * 0.01 * grade_on_material)));
+				float[] crit_sums = materials.get(i).getCriteriaSums();
+				abet_values.set(j, (float) ((abet_values.get(j) + crit_sums[j] * 0.01 * grade_on_material)));
 			}
 		}
-		
 		return abet_values;
 	}
-	
+	public void setName(String n)
+	{
+		name = n;
+	}
 	public ArrayList<Float> getABETvalues()
 	{
 		return abet_values;
 	}
-	
 	public ArrayList<Float> getGrades()
 	{
 		return grades;
 	}
-	
 	public void printGrades()
 	{
 		System.out.println();
@@ -79,7 +75,6 @@ public class Student
 			System.out.println(materials.get(i).getName() + " " + grades.get(i));
 		}
 	}
-	
 	public void printABET()
 	{
 		System.out.println();

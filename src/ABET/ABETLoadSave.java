@@ -8,7 +8,7 @@ import Driver.FileReaderWriter;
 public class ABETLoadSave 
 {
 	ArrayList<String> grade_key; //  NAME ASSIGNMENT1 ASSIGNMENT2 ASSIGNMENT3 ETC
-	ArrayList<Student> students; // will eacj
+	ArrayList<Student> students;
 	
 	public ABETLoadSave()
 	{
@@ -23,10 +23,7 @@ public class ABETLoadSave
 	}
 	
 	public ArrayList<Material> load(String file_name) throws IOException
-	{ // this method will read the data that we wrote previously from a save
-		// read num_materials
-		// for each material, read - name, points, each problem
-		// add save to list of materials
+	{ // this method reads data that was written previously from a save
 		ArrayList<Material> materials = new ArrayList<Material>();
 		FileReaderWriter frw = new FileReaderWriter();
 		ArrayList<String> lines = frw.readFile(file_name);
@@ -75,7 +72,6 @@ public class ABETLoadSave
 			
 			materials.add(new_material);
 		}
-		
 		return materials;
 	}
 	
