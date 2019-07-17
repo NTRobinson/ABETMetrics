@@ -26,6 +26,7 @@ import GUI.*;
 public class ABETGUI extends GUI implements Drawable, ActionListener
 {
 	private GUI materials_frame;
+	private GUI get_save_name;
 	private ArrayList<Material> materials;
 	private ArrayList<Student> students;
 	
@@ -50,6 +51,7 @@ public class ABETGUI extends GUI implements Drawable, ActionListener
     private JTextField prob_crit7;
     
     private JFileChooser file_chooser;
+    private JTextField save_name_t;
 	
 	public ABETGUI(int width, int height, String title) 
 	{
@@ -426,23 +428,46 @@ public class ABETGUI extends GUI implements Drawable, ActionListener
 		{ //  save all material data to a file
 			if(materials.size() > 0)
 			{
-				ArrayList<String> lines = new ArrayList<String>();
-				lines.add(Integer.toString(materials.size())); // need to know how many materials to read
-				for(Material m : materials)
-				{ // get each material
-					ArrayList<String> material_lines = m.toStringArray();
-					for(String s : material_lines)
-					{ // add material lines to file
-						lines.add(s);
-					}
-				}
-				ABETLoadSave ls = new ABETLoadSave();
-				try {ls.save("materials_data.txt", lines);} 
-				catch (IOException e) {e.printStackTrace();}
+				get_save_name = new GUI(300, 90, "Save");
+				javax.swing.ImageIcon img_icon = new javax.swing.ImageIcon("resources/abet.png");
+				get_save_name.setIconImage(img_icon.getImage());
 				
-				JOptionPane.showMessageDialog(this, "Assignment/material data saved.");
+				JLabel save_name_l = new JLabel("Enter desired file name: ");
+				save_name_t = new JTextField();
+				JLabel txt_l = new JLabel(".txt");
+				JButton save_name_b = new JButton("Save");
+				save_name_b.addActionListener(this);
+				save_name_b.setActionCommand("SAVE FILE");
+				
+				get_save_name.add(save_name_l, BorderLayout.WEST);
+				get_save_name.add(save_name_t, BorderLayout.CENTER);
+				get_save_name.add(save_name_b, BorderLayout.SOUTH);
+				get_save_name.add(txt_l, BorderLayout.EAST);
+				get_save_name.setVisible(true);
 			}
 			else {JOptionPane.showMessageDialog(this, "No assignments/materials added to save!");}
+		}
+		else if(ae.getActionCommand().equals("SAVE FILE"))
+		{
+			ArrayList<String> lines = new ArrayList<String>();
+			lines.add(Integer.toString(materials.size())); // need to know how many materials to read
+			for(Material m : materials)
+			{ // get each material
+				ArrayList<String> material_lines = m.toStringArray();
+				for(String s : material_lines)
+				{ // add material lines to file
+					lines.add(s);
+				}
+			}
+			ABETLoadSave ls = new ABETLoadSave();
+			try 
+			{
+				ls.save(save_name_t.getText() + ".txt", lines);
+				JOptionPane.showMessageDialog(this, "Assignment/material data saved.");
+			} 
+			catch (IOException e) {e.printStackTrace();}
+
+			get_save_name.setVisible(false);
 		}
 		else if(ae.getActionCommand().equals("LOAD GRADES"))
 		{

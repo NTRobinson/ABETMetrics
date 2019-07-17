@@ -1,0 +1,8 @@
+Name	PCB1	PCB2	Test 1	Test 2	Test 3
+Jim	100	99	98	97	96
+John	76	80	86	90	72
+Steve	80	86	90	72	83
+Bill	85	99	98	97	96
+Bobby	90	80	86	90	72
+Tim	98	86	90	85	83
+Timmy	57	60	62	70	59
