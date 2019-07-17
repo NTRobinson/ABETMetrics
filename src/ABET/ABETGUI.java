@@ -6,11 +6,13 @@ import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
@@ -46,6 +48,8 @@ public class ABETGUI extends GUI implements Drawable, ActionListener
     private JTextField prob_crit5;
     private JTextField prob_crit6;
     private JTextField prob_crit7;
+    
+    private JFileChooser file_chooser;
 	
 	public ABETGUI(int width, int height, String title) 
 	{
@@ -385,7 +389,12 @@ public class ABETGUI extends GUI implements Drawable, ActionListener
 			ABETLoadSave ls = new ABETLoadSave();
 			try 
 			{
-				ArrayList<Material> loaded_materials = ls.load("materials_data.txt");
+				file_chooser = new JFileChooser();
+				File curr_directory = new File(new java.io.File( "." ).getCanonicalPath());
+				file_chooser.setCurrentDirectory(curr_directory);
+				file_chooser.showOpenDialog(this);
+				
+				ArrayList<Material> loaded_materials = ls.load(file_chooser.getName(file_chooser.getSelectedFile()));
 				materials = loaded_materials;
 				
 				Material[] materials_array = new Material[materials.size()];
@@ -439,8 +448,13 @@ public class ABETGUI extends GUI implements Drawable, ActionListener
 		{
 			try 
 			{
+				file_chooser = new JFileChooser();
+				File curr_directory = new File(new java.io.File( "." ).getCanonicalPath());
+				file_chooser.setCurrentDirectory(curr_directory);
+				file_chooser.showOpenDialog(this);
+				
 				ABETLoadSave als = new ABETLoadSave();
-				students = als.getGrades(materials, "sample_input.txt");
+				students = als.getGrades(materials, file_chooser.getName(file_chooser.getSelectedFile()));
 				JOptionPane.showMessageDialog(this, "Student grade data has been loaded.");
 			}
 			catch (IOException e) {e.printStackTrace();}
